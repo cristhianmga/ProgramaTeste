@@ -22,7 +22,7 @@ namespace AprendendoNovaVersao.Controllers
             _context.SaveChanges();
             return lancamento;
         }
-        [HttpGet(Name = "ObterRelatorio")]
+        [HttpGet("obterRelatorioPorDia")]
         public Relatorio ObterRelatorioPorDia(DateTime dataVenda)
         {
             Relatorio relatorio = new Relatorio();
