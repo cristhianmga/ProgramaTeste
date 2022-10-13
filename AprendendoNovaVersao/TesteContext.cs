@@ -11,5 +11,6 @@ namespace AprendendoNovaVersao
         }
 
         public DbSet<Lancamento> Lancamentos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
