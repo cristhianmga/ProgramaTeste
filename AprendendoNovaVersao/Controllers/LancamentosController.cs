@@ -10,11 +10,11 @@ namespace AprendendoNovaVersao.Controllers
     [ApiController]
     public class LancamentosController : ControllerBase
     {
-        private readonly IPadraoBD _padraoBD;
+        private readonly ILancamentoNegocio _lancamento;
 
-        public LancamentosController(IPadraoBD padraoBD)
+        public LancamentosController(ILancamentoNegocio lancamento)
         {
-            _padraoBD = padraoBD;
+            _lancamento = lancamento;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace AprendendoNovaVersao.Controllers
         ///     {
         ///         "Descricao": "Descrição do produto"
         ///         "Data": "2022-01-12"
-        ///         "Valor": 17,50
+        ///         "Valor": 17.50
         ///     }
         /// </remarks>
         /// <param name="lancamento">Objeto lancamento</param>
@@ -36,9 +36,16 @@ namespace AprendendoNovaVersao.Controllers
         [Produces("application/json")]
         [HttpPost]
         [Authorize]
-        public Lancamento Salvar(Lancamento lancamento)
+        public ActionResult<Lancamento> Salvar(Lancamento lancamento)
         {
-            return _padraoBD.Salvar(lancamento);
+            try
+            {
+                return _lancamento.SalvarLancamento(lancamento);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
 
@@ -50,9 +57,16 @@ namespace AprendendoNovaVersao.Controllers
         /// <remarks>Retorna se foi concluida a exlusão</remarks>
         [HttpDelete]
         [Authorize]
-        public string Deletar(int id)
+        public ActionResult<string> Deletar(int id)
         {
-            return _padraoBD.Excluir<Lancamento>(id);
+            try
+            {
+                return _lancamento.DeletarLancamento(id);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
 
@@ -67,7 +81,7 @@ namespace AprendendoNovaVersao.Controllers
         ///         "Id": 5 
         ///         "Descricao": "Descrição do produto"
         ///         "Data": "2022-01-12"
-        ///         "Valor": 17,50
+        ///         "Valor": 17.50
         ///     }
         /// </remarks>
         /// <param name="lancamento">Objeto lancamento</param>
@@ -76,9 +90,16 @@ namespace AprendendoNovaVersao.Controllers
         [Produces("application/json")]
         [HttpPut]
         [Authorize]
-        public Lancamento Atualizar(Lancamento lancamento)
+        public ActionResult<Lancamento> Atualizar(Lancamento lancamento)
         {
-            return _padraoBD.Atualizar(lancamento);
+            try
+            {
+                return _lancamento.AtualizarLancamento(lancamento);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
         /// <summary>
         /// Obtem todos os lançamentos feitos no banco.
@@ -88,28 +109,16 @@ namespace AprendendoNovaVersao.Controllers
         [Produces("application/json")]
         [HttpGet]
         [Authorize]
-        public List<Lancamento> ObterTodos()
+        public ActionResult<List<Lancamento>> ObterTodos()
         {
-            return _padraoBD.ObterTodos<Lancamento>().ToList();
+            try
+            {
+                return _lancamento.ObterTodosLancamento();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
-
-
-
-
-        //[HttpGet("obterRelatorioPorDia")]
-        //public Relatorio ObterRelatorioPorDia(DateTime dataVenda)
-        //{
-        //    Relatorio relatorio = new Relatorio();
-        //    relatorio.DataVenda = dataVenda;
-        //    var lancamentos = _context.Lancamentos.Where(lancamento => lancamento.Data.Date == dataVenda.Date);
-        //    foreach(Lancamento item in lancamentos)
-        //    {
-        //        relatorio.SaldoDiario += item.Valor;
-        //    }
-
-        //    relatorio.Mensagem = string.Format("O saldo do dia {0} é : {1}", relatorio.DataVenda.Date, relatorio.SaldoDiario);
-
-        //    return relatorio;
-        //}
     }
 }

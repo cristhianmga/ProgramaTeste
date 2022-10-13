@@ -1,5 +1,6 @@
-using AprendendoNovaVersao;
 using AprendendoNovaVersao.Interface;
+using AprendendoNovaVersao.Negocio;
+using AprendendoNovaVersao.Persistencia;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -75,6 +76,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IPadraoBD, PadraoBD>();
+builder.Services.AddScoped<IRelatorioMontagem, RelatorioMontagem>();
+builder.Services.AddScoped<IUsuarioNegocio, UsuarioNegocio>();
+builder.Services.AddScoped<IAutenticacaoNegocio, AutenticacaoNegocio>();
+builder.Services.AddScoped<ILancamentoNegocio, LancamentoNegocio>();
 
 var app = builder.Build();
 

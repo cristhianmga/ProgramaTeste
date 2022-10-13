@@ -1,7 +1,7 @@
 ﻿using AprendendoNovaVersao.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace AprendendoNovaVersao
+namespace AprendendoNovaVersao.Persistencia
 {
     public class TesteContext : DbContext
     {

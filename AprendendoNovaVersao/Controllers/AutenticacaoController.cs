@@ -14,13 +14,11 @@ namespace AprendendoNovaVersao.Controllers
     [ApiController]
     public class AutenticacaoController : Controller
     {
-        private readonly IConfiguration _configuration;
-        private readonly IPadraoBD _padraoBD;
+        private readonly IAutenticacaoNegocio _autenticacao;
 
-        public AutenticacaoController(IConfiguration configuration, IPadraoBD padraoBD)
+        public AutenticacaoController(IAutenticacaoNegocio autenticacao)
         {
-            _configuration = configuration;
-            _padraoBD = padraoBD;
+            _autenticacao = autenticacao;
         }
 
 
@@ -37,55 +35,28 @@ namespace AprendendoNovaVersao.Controllers
         ///     }
         /// </remarks>
         /// <param name="usuario">Objeto usuário</param>
-        /// <returns>Retorna um IResult</returns>
+        /// <returns>Retorna um Result</returns>
         /// <remarks>Retorna o status e o token do jwt</remarks>
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IResult), 200)]
-        [ProducesResponseType(typeof(IResult), 401)]
-        [ProducesResponseType(typeof(IResult), 400)]
+        [ProducesResponseType(typeof(ActionResult<string>), 200)]
+        [ProducesResponseType(typeof(ActionResult<string>), 401)]
+        [ProducesResponseType(typeof(ActionResult<string>), 400)]
         [HttpPost]
         [AllowAnonymous]
-        public IResult CreateToken(Usuario usuario)
+        public ActionResult<string> CreateToken(Usuario usuario)
         {
-            bool dadosCorretos = false;
-            if (!string.IsNullOrEmpty(usuario.NomeUsuario) && !string.IsNullOrEmpty(usuario.Senha))
+            try
             {
-                dadosCorretos = _padraoBD.ObterTodos<Usuario>().Any(user => user.NomeUsuario.ToLower() == usuario.NomeUsuario.ToLower() && user.Senha == usuario.Senha);
+                return _autenticacao.CriarTokenAutenticacao(usuario);
             }
-            else
+            catch (ArgumentNullException)
             {
-                return Results.BadRequest("Dados Inválidos");
+                return BadRequest("Dados inválidos.");
             }
-
-            if (dadosCorretos)
+            catch (AccessViolationException)
             {
-                var issuer = _configuration["Jwt:Issuer"];
-                var audience = _configuration["Jwt:Audience"];
-                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, usuario.NomeUsuario),
-                new Claim(JwtRegisteredClaimNames.Email, usuario.NomeUsuario),
-                new Claim(JwtRegisteredClaimNames.Jti,
-                Guid.NewGuid().ToString())
-             }),
-                    Expires = DateTime.UtcNow.AddMinutes(5),
-                    Issuer = issuer,
-                    Audience = audience,
-                    SigningCredentials = new SigningCredentials
-                    (new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha512Signature)
-                };
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var jwtToken = tokenHandler.WriteToken(token);
-                var stringToken = tokenHandler.WriteToken(token);
-                return Results.Ok(stringToken);
+                return Unauthorized();
             }
-            return Results.Unauthorized();
         }
     }
 }

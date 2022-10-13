@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace AprendendoNovaVersao
+namespace AprendendoNovaVersao.Persistencia
 {
     public class PadraoBD : IPadraoBD
     {
@@ -30,19 +30,19 @@ namespace AprendendoNovaVersao
         public string Excluir<E>(int id) where E : class
         {
             E? entity = _context.Set<E>().Find(id);
-            if(entity == null)
+            if (entity == null)
             {
-                return "Objeto não encontrado";
+                throw new Exception("Objeto não encontrado");
             }
             else
             {
                 _context.Set<E>().Remove(entity);
-                _context.Entry<E>(entity).State = EntityState.Deleted;
+                _context.Entry(entity).State = EntityState.Deleted;
                 _context.SaveChanges();
                 return "Objeto Excluido";
             }
         }
-        
+
         public IQueryable<E> ObterTodos<E>() where E : class
         {
             return _context.Set<E>().AsQueryable();

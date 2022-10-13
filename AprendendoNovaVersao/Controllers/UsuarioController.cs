@@ -9,11 +9,11 @@ namespace AprendendoNovaVersao.Controllers
     [ApiController]
     public class UsuarioController : Controller
     {
-        private readonly IPadraoBD _padraoBD;
+        private readonly IUsuarioNegocio _usuarioNegocio;
 
-        public UsuarioController(IPadraoBD padraoBD)
+        public UsuarioController(IUsuarioNegocio usuarioNegocio)
         {
-            _padraoBD = padraoBD;
+            _usuarioNegocio = usuarioNegocio;
         }
 
         /// <summary>
@@ -34,9 +34,16 @@ namespace AprendendoNovaVersao.Controllers
         [Produces("application/json")]
         [HttpPost]
         [AllowAnonymous]
-        public Usuario Salvar(Usuario usuario)
+        public IResult Salvar(Usuario usuario)
         {
-            return _padraoBD.Salvar(usuario);  
+            try
+            {
+                return Results.Ok(_usuarioNegocio.SalvarUsuario(usuario));
+            }
+            catch (Exception e)
+            {
+                return Results.BadRequest(e.Message);
+            }
         }
     }
 }
