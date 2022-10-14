@@ -1,5 +1,6 @@
 ﻿using AprendendoNovaVersao.Interface;
 using AprendendoNovaVersao.Model;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AprendendoNovaVersao.Negocio
 {
@@ -11,11 +12,15 @@ namespace AprendendoNovaVersao.Negocio
             _padraoBD = padraoBD;
         }
 
-        public Relatorio MontarRelatorio(DateTime data)
+        public ActionResult<Relatorio> MontarRelatorio(DateTime data)
         {
             Relatorio relatorio = new Relatorio();
             relatorio.DataVenda = data;
             var lancamentos = _padraoBD.ObterTodos<Lancamento>().Where(lancamento => lancamento.Data.Date == data.Date);
+            if(lancamentos.Count() == 0)
+            {
+                throw new Exception();
+            }
             foreach (Lancamento item in lancamentos)
             {
                 relatorio.SaldoDiario += item.Valor;

@@ -18,10 +18,19 @@ namespace AprendendoNovaVersao.Controllers
 
         [HttpGet("obterPorDia")]
         [Produces("application/json")]
+        [ProducesResponseType(typeof(ActionResult<Relatorio>), 200)]
+        [ProducesResponseType(typeof(ActionResult), 404)]
         [Authorize]
-        public Relatorio ObterRelatorioPorDia(DateTime dataVenda)
+        public ActionResult<Relatorio> ObterRelatorioPorDia(DateTime dataVenda)
         {
-            return _relatorio.MontarRelatorio(dataVenda);
+            try
+            {
+                return _relatorio.MontarRelatorio(dataVenda);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
     }
 }

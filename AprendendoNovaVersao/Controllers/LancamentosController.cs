@@ -35,6 +35,8 @@ namespace AprendendoNovaVersao.Controllers
         /// <remarks>Retorna o lançamento incluído</remarks>
         [Produces("application/json")]
         [HttpPost]
+        [ProducesResponseType(typeof(ActionResult<Lancamento>), 200)]
+        [ProducesResponseType(typeof(ActionResult<string>), 400)]
         [Authorize]
         public ActionResult<Lancamento> Salvar(Lancamento lancamento)
         {
@@ -56,6 +58,8 @@ namespace AprendendoNovaVersao.Controllers
         /// <returns>Retorna uma mensagem</returns>
         /// <remarks>Retorna se foi concluida a exlusão</remarks>
         [HttpDelete]
+        [ProducesResponseType(typeof(ActionResult<string>), 200)]
+        [ProducesResponseType(typeof(ActionResult<string>), 404)]
         [Authorize]
         public ActionResult<string> Deletar(int id)
         {
@@ -88,6 +92,8 @@ namespace AprendendoNovaVersao.Controllers
         /// <returns>Objeto lançamento</returns>
         /// <remarks>Retorna o lançamento atulizado</remarks>
         [Produces("application/json")]
+        [ProducesResponseType(typeof(ActionResult<Lancamento>), 200)]
+        [ProducesResponseType(typeof(ActionResult<string>), 400)]
         [HttpPut]
         [Authorize]
         public ActionResult<Lancamento> Atualizar(Lancamento lancamento)
@@ -108,6 +114,8 @@ namespace AprendendoNovaVersao.Controllers
         /// <remarks>Retorna todos os laçamentos do banco</remarks>
         [Produces("application/json")]
         [HttpGet]
+        [ProducesResponseType(typeof(ActionResult<List<Lancamento>>), 200)]
+        [ProducesResponseType(typeof(ActionResult), 400)]
         [Authorize]
         public ActionResult<List<Lancamento>> ObterTodos()
         {

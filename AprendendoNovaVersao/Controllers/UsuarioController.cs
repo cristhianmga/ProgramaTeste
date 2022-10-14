@@ -33,16 +33,18 @@ namespace AprendendoNovaVersao.Controllers
         /// <remarks>Retorna o usuário incluído</remarks>
         [Produces("application/json")]
         [HttpPost]
+        [ProducesResponseType(typeof(ActionResult<Usuario>), 200)]
+        [ProducesResponseType(typeof(ActionResult<string>), 400)]
         [AllowAnonymous]
-        public IResult Salvar(Usuario usuario)
+        public ActionResult<Usuario> Salvar(Usuario usuario)
         {
             try
             {
-                return Results.Ok(_usuarioNegocio.SalvarUsuario(usuario));
+                return _usuarioNegocio.SalvarUsuario(usuario);
             }
             catch (Exception e)
             {
-                return Results.BadRequest(e.Message);
+                return BadRequest(e.Message);
             }
         }
     }

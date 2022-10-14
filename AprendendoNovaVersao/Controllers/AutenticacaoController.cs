@@ -55,7 +55,7 @@ namespace AprendendoNovaVersao.Controllers
             }
             catch (AccessViolationException)
             {
-                return Unauthorized();
+                return Unauthorized("Senha ou usuário inválido");
             }
         }
     }

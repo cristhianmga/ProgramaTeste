@@ -1,9 +1,10 @@
 ﻿using AprendendoNovaVersao.Model;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AprendendoNovaVersao.Interface
 {
     public interface IRelatorioMontagem
     {
-        public Relatorio MontarRelatorio(DateTime data);
+        public ActionResult<Relatorio> MontarRelatorio(DateTime data);
     }
 }
